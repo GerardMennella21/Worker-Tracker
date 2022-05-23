@@ -92,7 +92,11 @@ const app = () => {
 
 // View Departments
 const allDepartments = () => {
-    const sql = `SELECT * FROM department`;
+    const sql = `
+    SELECT department.id, department.name
+    AS department
+    FROM department
+    `;
     db.query(sql, (err, results) => {
         if (err) throw err;
         console.table(results);
@@ -102,7 +106,13 @@ const allDepartments = () => {
 
 // View Roles 
 const allRoles = () => {
-    const sql = `SELECT * FROM role`;
+    const sql = `
+    SELECT role.id, role.title AS role, role.salary,
+    department.name AS department
+    FROM role
+    LEFT JOIN department
+    ON role.department_id = department.id
+    `;
     db.query(sql, (err, results) => {
         if (err) throw err;
         console.table(results);
@@ -112,7 +122,12 @@ const allRoles = () => {
 
 // View Employees
 const allEmployees = () => {
-    const sql = `SELECT * FROM employee`;
+    const sql = `
+    SELECT employee.id, employee.first_name, employee.last_name, employee.manager_id, role.title AS role
+    FROM employee
+    LEFT JOIN role
+    ON employee.role_id = role.id
+    `;
     db.query(sql, (err, results) => {
         if (err) throw err;
         console.table(results);
