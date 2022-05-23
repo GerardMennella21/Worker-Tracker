@@ -19,3 +19,4 @@ This file populates the created tables with sample data. You can also add to the
 This file requires inquirer, console.table, and the db connection function's file. First the connection to the database is established. The app function is then created containing an inquirer prompt functioning as the main menu and a response to the prompt containing a switch statement executing a corresponding function for each choice in the prompt. The rest of the file contains functions to view, add, and delete data using inquirer prompts and sequel queries. the initial app function call is at the bottom of the file.
 
 # Video Walkthrough
+https://drive.google.com/file/d/1qiPBLpnE015MvOpSCOuTQXyrM9w5t1fa/view
