@@ -28,6 +28,7 @@ const app = () => {
             'View all employees',
             'View employees by department',
             'View employees by manager',
+            "View budget by department",
             'Add a department',
             'Add a role',
             'Add an employee',
@@ -53,7 +54,10 @@ const app = () => {
                 viewByDept()
                 break;
             case 'View employees by manager':
-                
+                viewByMgr()
+                break;
+            case 'View budget by department':
+                viewBudget()
                 break;
             case 'Add a department':
                 addDepartment()
@@ -118,7 +122,7 @@ const allEmployees = () => {
 
 // View Employees by Department
 viewByDept = () => {
-    sql = `SELECT * FROM department`
+    const sql = `SELECT * FROM department`
     db.query(sql, (err, result) => {
         if (err) throw err;
         const departments = result.map(({ id, name }) => ({ name: name, value: id}))
@@ -145,6 +149,52 @@ viewByDept = () => {
                         app()
                     })                    
                 })
+            })
+        })
+    })
+}
+
+// View by Manager
+viewByMgr = () => {
+    inquirer.prompt({
+        type: 'input',
+        name: 'mgr',
+        message: "Enter id of the manager who's employees you wish to view",
+        validate: input => {
+            if (input) {
+                return true
+            } else {
+                console.log('Please enter manager id!')
+                return false
+            }
+        }
+    }).then(id => {
+        const sql = `SELECT * FROM employee WHERE manager_id = ?`
+        db.query(sql, id.mgr, (err, result) => {
+            if (err) throw err
+            console.table(result)
+            app()
+        })
+    })
+}
+
+// View Budget
+viewBudget = () => {
+    const sql = `SELECT * FROM department`
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+        const departments = result.map(({ id, name }) => ({ name: name, value: id}))
+        inquirer.prompt({
+            type: 'list',
+            name: 'dept',
+            message: "Select department who's budget you would like to view.",
+            choices: departments
+        }).then(choice => {
+            const sql = `SELECT SUM(salary) AS budget FROM role WHERE department_id = ?`;
+            db.query(sql, choice.dept, (err, rows) => {
+                if (err) throw err;
+                console.table(rows)
+                app()
             })
         })
     })
